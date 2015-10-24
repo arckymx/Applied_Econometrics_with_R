@@ -55,9 +55,22 @@ summary(occupation)
 
 # Proportion tables can also be used
 tab <- table(occupation)
-pro.table(tab)
+prop.table(tab)
 
 # Categorical variables are best shown using barplots
 barplot(tab)
 pie (tab)
 ```
+
+
+#### 1-4 Two categorical variables
+Two categorical variables can be summarized using contingency table, using 'xtabs()', or simply 'table()'
+```{r}
+# Now let's look at a categorical variable
+xtabs(~ gender + occupation, CPS1985)
+
+# plot it
+plot(gender ~ occupation)
+
+```
+
