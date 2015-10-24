@@ -1,0 +1,63 @@
+---
+title: "2.8 Exploratory Data Analysis with R"
+author: "T.A. Meraxa"
+date: "October 24, 2015"
+output: html_document
+---
+
+#### 1. Consider the data CPS 1985 from Berndt (1991)
+
+```{r results='hide', message=FALSE, warning=FALSE}
+# Load library (AER)
+library(AER)
+
+# Load data
+data("CPS1985")
+```
+
+```{r}
+# see the data structure and summary
+str(CPS1985)
+summary(CPS1985)
+```
+
+
+#### 1-1. One numerical variable
+
+```{r}
+# Attach the variable names
+attach(CPS1985)
+
+# Now let's look at a numerical variable
+summary(wage)
+median(wage)
+var(wage)
+sd(wage)
+```
+
+
+#### 1-2. Graphical summary
+
+```{r}
+# Histogram
+hist(wage, freq = FALSE)
+hist(log(wage), freq = FALSE)
+lines(density(log(wage)),col = 4)
+```
+
+
+#### 1-3. One categorical variable
+For this type of variable, R categorizes it as factors. It is useless to calculate the mean and variance.
+
+```{r}
+# Now let's look at a categorical variable
+summary(occupation)
+
+# Proportion tables can also be used
+tab <- table(occupation)
+pro.table(tab)
+
+# Categorical variables are best shown using barplots
+barplot(tab)
+pie (tab)
+```
