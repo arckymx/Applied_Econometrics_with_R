@@ -1,6 +1,6 @@
 ### Applied Econometrics with R
 
-This repository will contain exercises from the book
+This repository containS exercises from the book
 
 #### About the book 
 This is the first book on applied econometrics using the R system for statistical computing and graphics. It presents hands-on examples for a wide range of econometric models, from classical linear regression models for cross-section, time series or panel data and the common non-linear models of microeconometrics such as logit, probit and tobit models, to recent semiparametric extensions. In addition, it provides a chapter on programming, including simulations, optimization, and an introduction to R tools enabling reproducible econometric research.
