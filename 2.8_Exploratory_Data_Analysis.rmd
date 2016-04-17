@@ -64,7 +64,7 @@ pie (tab)
 
 
 #### 1-4 Two categorical variables
-Two categorical variables can be summarized using contingency table, using 'xtabs()', or simply 'table()'
+Two categorical variables can be summarized using contingency table, using ```{r}xtabs()''', or simply 'table()'
 ```{r}
 # Now let's look at a categorical variable
 xtabs(~ gender + occupation, CPS1985)
