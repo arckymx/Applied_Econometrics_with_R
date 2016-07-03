@@ -5,7 +5,25 @@ date: "July 3, 2016"
 output: html_document
 ---
 
-#### 3. Linear Regression
+### 3. Linear Regression
 
-In R models are fitted using model-fitting function, that is `lm()`. Usage is as follows 
-`fm <- lm(formula,data,..)`
+In R models are fitted using model-fitting function, that is 'lm()'. Usage is as follows 
+'fm <- lm(formula,data,..)'. Generic functions such as `summary()`,`residuals()`,or `predict()` are available for all standard models.
+
+#### 3.1. Simple Linear Regression
+
+```{r results='hide', message=FALSE, warning=FALSE}
+# Load data
+data("Journals")
+Journals <- Journals[,c("subs","price")]
+Journals$citeprice <- Journals$price/Journals$citations
+```
+
+```{r}
+# see the data structure and summary
+summary(Journals)
+```
+
+The goal is to estimate the effect of the price per citation on the number of library subscription. Therefore, we fit a linear regression model
+
+log(subs)[i]= 
