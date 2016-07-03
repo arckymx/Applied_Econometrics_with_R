@@ -1,0 +1,11 @@
+---
+title: "3_Linear_Regression"
+author: "T.A. Meraxa"
+date: "July 3, 2016"
+output: html_document
+---
+
+#### 3. Linear Regression
+
+In R models are fitted using model-fitting function, that is 'lm()'. Usage is as follows 
+'fm <- lm(formula,data,..)'
