@@ -58,19 +58,19 @@ jour_slm$coefficients
 
 **Useful functions**
 
-`print()`     simple printed display
-`summary()`   standard regression output
-`coef()`      (or `coefficients()`) extracting the regression coefficients
-`residuals()` (or `resid()`) extracting residuals
-`fitted()`    (or `fitted.values()`) extracting fitted values
-`anova()`     comparison of nested models
-`predict()`   predictions for new data
-`plot()`      diagnostic plots
-`confint()`   confidence intervals for the regression coefficients
-`deviance()`  residual sum of squares
-`vcov()`      (estimated) variance-covariance matrix
-`logLik()`    log-likelihood (assuming normally distributed errors)
-`AIC()`       information criteria including AIC, BIC/SBC (assuming normally distributed errors)
+* `print()`     simple printed display
+* `summary()`   standard regression output
+* `coef()`      (or `coefficients()`) extracting the regression coefficients
+* `residuals()` (or `resid()`) extracting residuals
+* `fitted()`    (or `fitted.values()`) extracting fitted values
+* `anova()`     comparison of nested models
+* `predict()`   predictions for new data
+* `plot()`      diagnostic plots
+* `confint()`   confidence intervals for the regression coefficients
+* `deviance()`  residual sum of squares
+* `vcov()`      (estimated) variance-covariance matrix
+* `logLik()`    log-likelihood (assuming normally distributed errors)
+* `AIC()`       information criteria including AIC, BIC/SBC (assuming normally distributed errors)
 
 ##### Analysis of Variance
 
