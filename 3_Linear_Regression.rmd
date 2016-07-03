@@ -24,7 +24,7 @@ Journals$citeprice <- Journals$price/Journals$citations
 summary(Journals)
 ```
 
-The goal is to estimate the effect of the price per citation on the number of library subscription. Therefore, we fit a linear regression model *log(subs)[i] = Beta[1] + Beta[2]log(citeprice)+Epsilon[i]*. The primary function of tthe `lm()` estimates a linear regression using ordinary least squares
+The goal is to estimate the effect of the price per citation on the number of library subscription. Therefore, we fit a linear regression model **log(subs)[i] = Beta[1] + Beta[2]log(citeprice)+Epsilon[i]**. The primary function of tthe `lm()` estimates a linear regression using ordinary least squares
 
 ```{r}
 # plot the regression fit
