@@ -63,14 +63,43 @@ pie (tab)
 ```
 
 
-#### 1-4 Two categorical variables
-Two categorical variables can be summarized using contingency table, using **xtabs()**, or simply **table()**
+#### 1-4. Two categorical variables
+Two categorical variables can be summarized using contingency table, using 'xtabs()', or simply 'table()'
 ```{r}
 # Now let's look at a categorical variable
 xtabs(~ gender + occupation, CPS1985)
 
-# plot it
+# plot it using boxplot
 plot(gender ~ occupation)
-
 ```
 
+
+#### 1-5. Two numerical variables
+Exemplify exploratory analysis on **wage** and **education**. To examine the relationship use `cor()`.
+```{r}
+# Examine correlation
+cor(log(wage),education)
+cor(log(wage),education, method = "spearman")
+
+# PLot the correlation
+plot(log(wage) ~ education)
+```
+
+#### 1-6.
+It is common for data frame to have both numerical and categorical example
+```{r}
+# Function for numerical summaries
+tapply(log(wage),gender,mean)
+
+# Plot the summaries
+plot(log(wage) ~ gender)
+
+#plot it using QQplot
+mwage <- subset(CPS1985, gender == "male")$wage
+fwage <- subset(CPS1985, gender =="female")$wage
+qqplot(mwage, fwage, 
+       xlim = range(wage), ylim = range(wage), 
+       xaxs = "i", yaxs = "i", 
+       xlab = "male", ylab = "female")
+abline(0,1)
+```
