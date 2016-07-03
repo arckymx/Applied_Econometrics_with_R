@@ -8,7 +8,7 @@ output: html_document
 ### 3. Linear Regression
 
 In R models are fitted using model-fitting function, that is 'lm()'. Usage is as follows 
-`fm <- lm(formula,data,..)'. Generic functions such as `summary()`,`residuals()`,or `predict()` are available for all standard models.
+`fm <- lm(formula,data,..)`. Generic functions such as `summary()`,`residuals()`,or `predict()` are available for all standard models.
 
 #### 3.1. Simple Linear Regression
 
