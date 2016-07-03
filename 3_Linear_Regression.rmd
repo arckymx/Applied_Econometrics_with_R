@@ -12,10 +12,10 @@ In R models are fitted using model-fitting function, that is 'lm()'. Usage is as
 
 #### 3.1. Simple Linear Regression
 
-```{r results='hide', message=FALSE, warning=FALSE}
+```{r}
 # Load data
 data("Journals")
-Journals <- Journals[,c("subs","price")]
+journals <- Journals[,c("subs","price")]
 Journals$citeprice <- Journals$price/Journals$citations
 ```
 
@@ -26,4 +26,13 @@ summary(Journals)
 
 The goal is to estimate the effect of the price per citation on the number of library subscription. Therefore, we fit a linear regression model
 
-log(subs)[i]= 
+log(subs)[i]= Beta[1] + Beta[2]log(citeprice)+Epsilon[i]
+
+The primary function of tthe `lm()` estimates a linear regression using ordinary least squares
+
+```{r}
+# plot the regression fit
+plot(log(subs) ~ log(citeprice), data = journals)
+jour_lm <- lm(log(subs) ~ log(citeprice), data = journals)
+abline(jour_lm)
+```
