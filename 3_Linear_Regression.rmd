@@ -7,7 +7,7 @@ output: html_document
 
 ### 3. Linear Regression
 
-In R models are fitted using model-fitting function, that is 'lm()'. Usage is as follows 
+In R models are fitted using model-fitting function, that is `lm()`. Usage is as follows 
 `fm <- lm(formula,data,..)`. Generic functions such as `summary()`,`residuals()`,or `predict()` are available for all standard models.
 
 #### 3.1. Simple Linear Regression
@@ -24,7 +24,11 @@ Journals$citeprice <- Journals$price/Journals$citations
 summary(Journals)
 ```
 
-The goal is to estimate the effect of the price per citation on the number of library subscription. Therefore, we fit a linear regression model **log(subs)[i] = Beta[1] + Beta[2]log(citeprice)+Epsilon[i]**. The primary function of the `lm()` estimates a linear regression using ordinary least squares
+The goal is to estimate the effect of the price per citation on the number of library subscription. Therefore, we fit a linear regression model
+
+log(subs)[i]= Beta[1] + Beta[2]log(citeprice)+Epsilon[i]
+
+The primary function of tthe `lm()` estimates a linear regression using ordinary least squares
 
 ```{r}
 # plot the regression fit
@@ -32,3 +36,86 @@ plot(log(subs) ~ log(citeprice), data = journals)
 jour_lm <- lm(log(subs) ~ log(citeprice), data = journals)
 abline(jour_lm)
 ```
+
+```{r}
+# check the class of fitted model jour_lm
+class(jour_lm)
+
+# check the names of its components
+names(jour_lm)
+
+# check the summary of jour_lm
+summary(jour_lm)
+
+# create the summary for the fitten lm object
+jour_slm <- summary(jour_lm)
+class(jour_slm)
+names (jour_slm)
+
+#check the coefficient of jour_slm
+jour_slm$coefficients
+```
+
+**Useful functions**
+
+`print()`     simple printed display
+`summary()`   standard regression output
+`coef()`      (or `coefficients()`) extracting the regression coefficients
+`residuals()` (or `resid()`) extracting residuals
+`fitted()`    (or `fitted.values()`) extracting fitted values
+`anova()`     comparison of nested models
+`predict()`   predictions for new data
+`plot()`      diagnostic plots
+`confint()`   confidence intervals for the regression coefficients
+`deviance()`  residual sum of squares
+`vcov()`      (estimated) variance-covariance matrix
+`logLik()`    log-likelihood (assuming normally distributed errors)
+`AIC()`       information criteria including AIC, BIC/SBC (assuming normally distributed errors)
+
+##### Analysis of Variance
+
+```{r}
+# perform analysis of variance
+anova(jour_lm)
+```
+
+##### Point and interval estimates
+
+```{r}
+# extracting the estimated regression coefficients
+coef(jour_lm)
+
+# obtain confidence interval
+confint(jour_lm, level = 0.95)
+```
+
+##### prediction
+
+```{r}
+# predicting points on the regression line and predicting a new data value
+predict(jour_lm, newdata = data.frame(citeprice = 2.11), interval = "confidence")
+predict(jour_lm, newdata = data.frame(citeprice = 2.11), interval = "prediction")
+        
+#
+lciteprice <- seq(from = -6, to = 4, by = 0.25)
+jour_pred <- predict(jour_lm, interval = "prediction",
+                     newdata = data.frame(citeprice = exp(lciteprice)))
+```
+
+##### plotting "lm" objects
+
+```{r}
+# predicting points on the regression line and predicting a new data value
+par(mfrow = c(2,2))
+plot(jour_lm)
+par(mfrow = c(1,1))
+```
+
+##### testing linear hypothesis
+
+```{r}
+# linear hypothesis test
+linearHypothesis(jour_lm, "log(citeprice) = -0.5")
+```
+
+#### 3.2. Multiple Linear Regression
