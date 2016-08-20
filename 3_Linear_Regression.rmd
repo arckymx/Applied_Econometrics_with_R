@@ -153,4 +153,25 @@ cps_noeth <- lm(log(wage) ~ experience + I(experience^2) + education, data = CPS
 
 # run ANOVA between the models
 anova(cps_noeth, cps_lm)
+
+# review ANOVA of one model
+anova(cps_lm)
+anova(cps_noeth)
+```
+
+##### updating model
+
+```{r}
+# create a new regression without ethnicity
+cps_noeth2 <- update(cps_lm, formula = .~ . - ethnicity)
+summary(cps_noeth2)
+```
+
+##### Wald test
+
+Wald test produces the same F test as `anova()` but does not report RSS. `waldtest()` can also perform quasi-F tests in situatiins where errors are potentially heteroskedastic.
+
+```{r}
+# create a new regression without ethnicity
+waldtest(cps_lm, .~ . - ethnicity)
 ```
