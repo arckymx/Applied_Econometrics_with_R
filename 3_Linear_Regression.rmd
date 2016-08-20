@@ -16,7 +16,7 @@ In R models are fitted using model-fitting function, that is `lm()`. Usage is as
 # Load data
 data("Journals")
 journals <- Journals[,c("subs","price")]
-Journals$citeprice <- Journals$price/Journals$citations
+citeprice <- Journals$price/Journals$citations
 ```
 
 ```{r}
@@ -72,14 +72,14 @@ jour_slm$coefficients
 * `logLik()`    log-likelihood (assuming normally distributed errors)
 * `AIC()`       information criteria including AIC, BIC/SBC (assuming normally distributed errors)
 
-##### Analysis of Variance
+###### Analysis of Variance
 
 ```{r}
 # perform analysis of variance
 anova(jour_lm)
 ```
 
-##### Point and interval estimates
+###### Point and interval estimates
 
 ```{r}
 # extracting the estimated regression coefficients
@@ -89,7 +89,7 @@ coef(jour_lm)
 confint(jour_lm, level = 0.95)
 ```
 
-##### prediction
+###### prediction
 
 ```{r}
 # predicting points on the regression line and predicting a new data value
@@ -102,7 +102,7 @@ jour_pred <- predict(jour_lm, interval = "prediction",
                      newdata = data.frame(citeprice = exp(lciteprice)))
 ```
 
-##### plotting "lm" objects
+###### plotting "lm" objects
 
 ```{r}
 # predicting points on the regression line and predicting a new data value
@@ -111,7 +111,7 @@ plot(jour_lm)
 par(mfrow = c(1,1))
 ```
 
-##### testing linear hypothesis
+###### testing linear hypothesis
 
 ```{r}
 # linear hypothesis test
@@ -119,3 +119,38 @@ linearHypothesis(jour_lm, "log(citeprice) = -0.5")
 ```
 
 #### 3.2. Multiple Linear Regression
+
+In economics, most regression analyses comprise more than a single regressor. Often there are regressor of a soecial type, usually referred to as dummy variables in econometrics, which are used for coding categorical variables. 
+
+Furthermore, it is also necessary to transform regressors or dependent variables.
+
+Here, we employ the CPS1988 data frame collected in the March 1988 Current Population Survey (CPS) by the US Census Bureau and analyzed by Bierens and Ginther (2001). This is an industry strenght example.
+
+```{r}
+# load data
+data("CPS1988")
+summary(CPS1988)
+attach(CPS1988)
+```
+
+The model is
+
+log(wage)[i]= Beta[1] + Beta[2]experience + Beta[3]experience^2 + Beta[4]education + Beta[5] ethnicity + Epsilon[i]
+
+```{r}
+# fit the model in R
+cps_lm <- lm(log(wage) ~ experience + I(experience^2) + education + ethnicity, data = CPS1988)
+
+# review the model
+summary(cps_lm)
+```
+
+##### comparison of models
+
+```{r}
+# create a new regression without ethnicity
+cps_noeth <- lm(log(wage) ~ experience + I(experience^2) + education, data = CPS1988)
+
+# run ANOVA between the models
+anova(cps_noeth, cps_lm)
+```
