@@ -67,9 +67,21 @@ legend("topleft", c("quadratic", "spline"), lty = c(2,1), bty = "n")
 
 The spline are not too distinct for the 20-40 years of experience range. Overall, the spline version exhibits less curvature beyond eight years of experience. The highlight of this feature is that the more pronounced curvature below seven years of experience.
 
-### Factors, Interactions and Weights
+### 4. Factors, Interactions and Weights
 
-Formula     | Description
-------------|------------
-1           |2
-3           |4
+Formula       | Description
+------------  |------------
+y ~ a + x     | Model without interaction: indentical slopes with respect to x, but different intercepts with respect to a.
+Y ~ a* x      | Model with interaction: the term a:x gives the difference in slopes compared with the reference category.
+y ~ a/x       | Model with interaction: produces the same fitten values as the mdoel above but using a nested coefficient coding. An explicit slope estimate is computed for each category in a.
+y ~ (a+b+c)^2 | Model with all two-way interactions(excluding three way interaction).
+
+#### Interactions
+
+```{r}
+# Let's consider an interaction between `ethnicity` and `education`
+cps_int <- lm(log(wage) ~ experience + I(experience^2) + education * ethnicity, data = CPS1988)
+coeftest(cps_int)
+```
+
+Resuts indicated that the interaction term is significant at the 5% level
