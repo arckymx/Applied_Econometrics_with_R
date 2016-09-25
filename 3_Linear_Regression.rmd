@@ -181,7 +181,7 @@ waldtest(cps_lm, .~ . - ethnicity)
 library(AER)
 library(splines)
 data("CPS1988")
-attach(CPS1988)
+attach(CPS1988)l
 cps_lm <- lm(log(wage) ~ experience + I(experience^2) + education + ethnicity, data = CPS1988)
 ```
 
