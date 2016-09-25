@@ -89,7 +89,7 @@ coef(jour_lm)
 confint(jour_lm, level = 0.95)
 ```
 
-###### prediction
+###### Prediction
 
 ```{r}
 # predicting points on the regression line and predicting a new data value
@@ -102,7 +102,7 @@ jour_pred <- predict(jour_lm, interval = "prediction",
                      newdata = data.frame(citeprice = exp(lciteprice)))
 ```
 
-###### plotting "lm" objects
+###### Plotting "lm" objects
 
 ```{r}
 # predicting points on the regression line and predicting a new data value
@@ -111,7 +111,7 @@ plot(jour_lm)
 par(mfrow = c(1,1))
 ```
 
-###### testing linear hypothesis
+###### Testing linear hypothesis
 
 ```{r}
 # linear hypothesis test
@@ -145,7 +145,7 @@ cps_lm <- lm(log(wage) ~ experience + I(experience^2) + education + ethnicity, d
 summary(cps_lm)
 ```
 
-##### comparison of models
+##### Comparison of models
 
 ```{r}
 # create a new regression without ethnicity
@@ -159,7 +159,7 @@ anova(cps_lm)
 anova(cps_noeth)
 ```
 
-##### updating model
+##### Updating model
 
 ```{r}
 # create a new regression without ethnicity
@@ -175,3 +175,64 @@ Wald test produces the same F test as `anova()` but does not report RSS. `waldte
 # create a new regression without ethnicity
 waldtest(cps_lm, .~ . - ethnicity)
 ```
+
+```{r}
+# data prep
+library(AER)
+library(splines)
+data("CPS1988")
+attach(CPS1988)
+cps_lm <- lm(log(wage) ~ experience + I(experience^2) + education + ethnicity, data = CPS1988)
+```
+
+
+#### 3.3 Partly Linear Model
+
+Quadrati terms in experience are common in wage equations; however, given the size of the CPS1988 data, it may be worthwile to model the role of thisvariable using more flexible tools.
+
+Consider the model:
+
+log(wage)= Beta[1] + g(experience) + Beta[2]education + Beta[3]ethnicity + Epsilon
+
+Here, g is an unknown function to be estimated from the data. Regression splines are use for this task. Splines is included in the packages `("splines")` and also in `("AER")`. 
+
+```{r}
+# computing B splines
+cps_plm <- lm(log(wage) ~ bs(experience, df = 5) + education + ethnicity, data = CPS1988)
+summary(cps_plm)
+```
+
+The choice of `df = 5` is based on Schwarz criterion (BIC). See the code below.
+
+```{r}
+# computing B splines; Schwarz criterion (BIC) selection 
+cps_bs <- lapply(3:10, function (i) lm(log(wage) ~
+          bs(experience, df = i) + education + ethnicity,
+          data = CPS1988))
+
+structure(sapply(cps_bs, AIC, k = log(nrow(CPS1988))),
+          .Names = 3:10)
+```
+
+The cubic spline selected from the model is comparred with the classical fit form `cps_lm`
+
+```{r}
+# plot a graph
+cps <- data.frame(
+    experience = -2:60, 
+    education = with (CPS1988, mean(education[ethnicity == "cauc"])),
+    ethnicity = "cauc")
+
+cps$yhat1 <- predict(cps_lm, newdata = cps)
+cps$yhat2 <- predict(cps_plm,newdata = cps)
+plot(log(wage) ~ jitter(experience, factor = 3), 
+     pch = 19,
+     col = rgb(0.5, 0.5, 0.5, alpha = 0.02), 
+     data = CPS1988)
+lines(yhat1 ~ experience, data = cps, lty = 2)
+lines(yhat2 ~ experience, data = cps)
+legend("topleft", c("quadratic", "spline"), lty = c(2,1), bty = "n")
+
+```
+
+The spline are not too distinct for the 20-40 years of experience range. Overall, the spline version exhibits less curvature beyond eight years of experience. The highlight of this feature is that the more pronounced curvature below seven years of experience.
