@@ -75,7 +75,7 @@ summary(jour_wls1)
 summary(jour_wls2) # yields a regression with weights in the form 1/z[i]
 ```
 
-plotting a comparison between OLS and WLS
+Plotting a comparison between OLS and WLS
 
 ```{r}
 plot(log(subs) ~ log(citeprice), data = journals)
@@ -85,5 +85,94 @@ abline(jour_wls2, lwd = 2, lty = 3)
 legend("bottomleft", c("OLS", "WLS1", "WLS2"), lty = 1:3, lwd = 2, bty = "n")
 ```
 
+#### Feasible generalized least squares (FGLS)
+
+E(epsilon^2i|xi) = sigma^2x^2i = exp(lambda1+lambda2logxi)
+
+When you are not sure as to which form of the skedastic function to use and would prefer to estimate it from the data. This is estimated by regressing the logarithm of the squared residuals from the OLS regression on the logarithm of `citeprice` and a constant.
+
+```{r}
+# Use fitted values of this auxilarry regression as the weights in the model of interesst
+auxreg <- lm(log(residuals(jour_lm)^2) ~ log(citeprice), data = journals)
+
+# Create the model
+jour_fgls1 <- lm(log(subs) ~ log(citeprice), weights = 1/exp(fitted(auxreg)), data = journals)
+
+# Summary 
+summary(jour_fgls1)
+
+# It is possible to iterate further, yielding a second variant of the FGLS approach. A compact solution makes use of a while loop:
+gamma2i <- coef(auxreg)[2]
+gamma2 <- 0
+
+while(abs((gamma2i - gamma2)/gamma2) > 1e-7) {
+  gamma2 <- gamma2i
+  fglsi <- lm(log(subs) ~ log(citeprice), data = journals,
+  weights = 1/citeprice^gamma2)
+  gamma2i <- coef(lm(log(residuals(fglsi)^2) ~
+  log(citeprice), data = journals))[2]
+}
+  
+# Create the model
+jour_fgls2 <- lm(log(subs) ~ log(citeprice), data = journals, weights = 1/citeprice^gamma2)
+
+# Summary
+summary(jour_fgls2)
+
+```
+
+The loop specifies that as long as the relative change of the slope coefficient exceeds 10^-7 in absolute value, the interation is continued.
+
 ### 3.5 Linear Regression with Time Series Data
+
+In econometrics, time series regressions are often fitten by OLS. However, this is typically not the case for time series data, which are more conveniently stored in one of R's time series classes. Using `lm` with "ts" has two drawbacks: (1) for fitted values or resoduals, the time series properties are by default not preserved, and (2) lags or differences cannot directly be specifiedin the model formula.
+
+The solution is to do additional computations "by hand". Alternatively, the package dynlm (Zeileis, 2008) provides the function dynlm, which helps to overcome the problems desired above. This method allows formulas such as `d(y) ~ L(d(y)) + L(x, 4)`, describing a regression of the first differences of a variable y on its first difference lagged by one period and on the fourth lag of a variable x.
+
+As illustration, we will follow Greene (2003), and consider different forms for a consumption function based on quarterly US macroeconomic data from 1950 through 2004 as provided in the data set `USMacroG`.
+
+```{r}
+install.packages("dynlm")
+library(dynlm)
+data("USMacroG")
+
+
+# Visualize the disposable income dpi and consumption
+plot(USMacroG[, c("dpi", "consumption")], lty = c(3,1), plot.type = "single", ylab="")
+legend("topleft", legend = c("income", "consumption"), lty = c(3,1), bty = "n")
+```
+
+Greene (2003) considers two models:
+
+Consumption = Beta1 + Beta2dpi + Beta3dpi[i-1] + epsilon[i]
+~ a distributed lag model, conssumption responds to change in income only over two periods.
+
+Consumption = Beta1 + Beta2dpi + Beta3consumption[i-1] + epsilon[i]
+~ autoregressive distributed lag model, the effects of income changes persist due to the autoregressive specification.
+
+The models can be fitted to by `dynlm()` as follows
+
+```{r}
+# Fitting the model
+library("dynlm")
+cons_lm1 <- dynlm(consumption ~ dpi + L(dpi), data = USMacroG)
+cons_lm2 <- dynlm(consumption ~ dpi + L(consumption), data = USMacroG)
+
+# Summary
+summary(cons_lm1)
+summary(cons_lm2)
+
+# The RSS of the models can be obtained as follows:
+deviance(cons_lm1)
+deviance(cons_lm2)
+
+# The two fitted models can be visualed using the folloiwing code:
+plot(merge(as.zoo(USMacroG[,"consumption"]), fitted(cons_lm1),
+  fitted(cons_lm2), 0, residuals(cons_lm1),
+  residuals(cons_lm2)), screens = rep(1:2, c(3, 3)),
+  lty = rep(1:3, 2), ylab = c("Fitted values", "Residuals"),
+  xlab = "Time", main = "")
+legend(0.05, 0.95, c("observed", "cons_lm1", "cons_lm2"),
+  lty = 1:3, bty = "n")
+```
 
