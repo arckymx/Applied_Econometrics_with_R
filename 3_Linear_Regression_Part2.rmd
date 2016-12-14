@@ -1,7 +1,7 @@
 ---
 title: "3_Linear_Regression_Part_2"
 author: "T.A. Meraxa"
-date: "August 20, 2016"
+date: "November, 2016"
 output: html_document
 ---
 
@@ -175,4 +175,43 @@ plot(merge(as.zoo(USMacroG[,"consumption"]), fitted(cons_lm1),
 legend(0.05, 0.95, c("observed", "cons_lm1", "cons_lm2"),
   lty = 1:3, bty = "n")
 ```
+
+#### Encompassing test
+
+To discriminate between these two competing nonnested models, we consider an encompassing test. The encompassing approach to comparing two nonnested models is to transform the problem into a situation we can already deal with: comparing nested models. The idea is to fit the encompassing model comprising all regressors from both competing models, in our case the autoregressive distributed lag (ADL) model
+
+```{r}
+# Model
+cons_lmE <- dynlm(consumption ~ dpi + L(dpi) + L(consumption), data = USMacroG)
+```
+
+and then to compare each of the two nonnested models with the encompassing models. Now if one of the models is not significantly worse than the encompassing modell while the other is, this test would favor the former model over the latter. As illustrated in the previous sections, nested models can be compared with `anova()`, and the tests can be carried out in one go.
+
+```{r}
+# Model
+anova(cons_lm1, cons_lmE, cons_lm2)
+```
+
+The first F test compares the model `cons_lm1` with the encompassing model `cons_lmE`, and the second F test compares `cons_lmE` and `cons_lm2`. Both models perform significantly worse compared with the encompassing model, although the F statistic is much smaller for `cons_lm2`.
+
+Instead of computing the encompassing model by hand and then by calling anova(), the function encomptest() from the lmtest package can be used. This simplifies the call to
+
+```{r}
+# Function encomptest()
+encomptest(cons_lm1, cons_lm2)
+```
+
+### 3.6 Linear Regression with Panel Data
+
+The package plm (Croissant & Millo, 2005) contains the relevant fitting functions and methods for panel data.
+
+#### Static linear models
+
+For illustrating the basic fixed- and random-effects methods, we use the well known Grunfeld data (Grunfeld 1958) comprising 20 annual observations on the three variables of real gross investement (invest), real value of the firm (value), and real value of the capital stock (capital) for 11 large US firms for the year 1935-1954.
+
+The main difference between cross-sectional data and panel data is that panel data have an internal structure, indexed by a two-dimensional array, which must be communicated into the fitting function.
+
+
+
+
 
